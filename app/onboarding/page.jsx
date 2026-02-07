@@ -19,7 +19,6 @@ export default function Onboarding() {
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-
   const handleGetLocation = () => {
     setLoadingLocation(true);
     if ("geolocation" in navigator) {
