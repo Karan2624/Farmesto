@@ -28,7 +28,6 @@ export const store = mutation({
       return user._id;
     }
 
-    r
     return await ctx.db.insert("users", {
       name: name,
       tokenIdentifier: identity.tokenIdentifier,
@@ -57,14 +56,28 @@ export const assignRole = mutation({
       .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
       .unique();
 
-    if (!user) throw new Error("user not found");
+    
 
-    await ctx.db.patch(user._id, {
+    if(user){
+      await ctx.db.patch(user._id, {
       role: args.role,
       address: args.address,
       latitude: args.latitude,
       longitude: args.longitude,
     });
+    }
+    else{
+      await ctx.db.insert("users",{
+        name : identity.name || "Anomynous",
+        tokenIdentifier : identity.tokenIdentifier,
+        email : identity.email,
+        imageUrl : identity.pictureUrl || "",
+        role : args.role,
+        address:args.address,
+        latitude: args.latitude,
+        longitude: args.longitude,
+      });
+    }
   },
 });
 

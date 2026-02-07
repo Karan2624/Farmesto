@@ -4,7 +4,7 @@ import { api } from "@/convex/_generated/api";
 import { SignIn, SignInButton } from "@clerk/clerk-react";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { LayoutDashboard, Leaf, LogIn, Package, PlusCircle, Settings, Store, User } from "lucide-react";
+import { Home, LayoutDashboard, Leaf, LogIn, Package, PlusCircle, Settings, Store, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -12,7 +12,7 @@ export const Sidebar = () => {
     const pathname = usePathname();
     const user = useQuery(api.users.getUserState);
     const navItems = [
-        {href:"/",label:"Home",icon:LayoutDashboard}
+        {href:"/",label:"Home",icon:Home}
     ];
     if(user?.role==="farmer"){
         navItems.push(
@@ -24,7 +24,7 @@ export const Sidebar = () => {
     }
     else if(user?.role==="buyer"){
         navItems.push(
-            {href:"/marketplace",lable:"MarketPlace",icon:Store},
+            {href:"/marketplace",label:"MarketPlace",icon:Store},
             {href:"/myorders",label:"My Orders",icon:Package},     
         );
     }
