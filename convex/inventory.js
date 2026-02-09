@@ -11,7 +11,7 @@ export const addCrop = mutation({
   args: {
     name: v.string(),
     plantedDate: v.string(),
-    expiryDate: v.string(),
+    expiryDate: v.optional(v.string()),
     quantity: v.number(),
     unit: v.string(),
   },
@@ -131,3 +131,56 @@ export const getMyInventory = query({
     return allCrops;
   },
 });
+
+export const createAlert = mutation({
+  args : {
+    cropId : v.optional(v.id("crops")),
+    type : v.union(v.literal("reminder"),v.literal("expiry")),
+    cropName : v.string(),
+    date : v.string(),
+    note : v.optional(v.string()),
+  },
+  handler : async(ctx,args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if(!identity) throw new Error("Unauthenticated");
+
+    const user = await ctx.db.query("users").withIndex("by_token",(q) => q.eq("tokenIdentifier",identity.tokenIdentifier)).unique();
+    if(!user) throw new Error("User not found");
+    const newAlertId = await ctx.db.insert("alerts",{
+      userId : user._id,
+      cropId : args.cropId,
+      type : args.type,
+      date : args.date,
+      note : args.note,
+      isCompleted : false,
+      cropName : args.cropName,
+
+    });
+    return newAlertId;
+  }
+});
+export const deleteAlert = mutation({
+  args: {alertId : v.id("alerts"),},
+  handler: async(ctx,args) => {
+    await ctx.db.delete(args.alertId);
+  },
+});
+
+export const getMyalerts = query({
+  args : {},
+  handler : async(ctx,args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if(!identity) throw new Error("Unauthenticated");
+    const user = await ctx.db.query("users").withIndex("by_token",(q) => q.eq("tokenIdentifier",identity.tokenIdentifier)).unique();
+    if(!user) return [];
+
+    const alerts = await ctx.db.query("alerts").withIndex("by_userId",(q) => q.eq("userId",user._id)).collect();
+
+    return alerts.sort((a,b) => new Date(a.date).getTime()-new Date(b.date).getTime());
+
+  },
+});
+
+
+
+
