@@ -45,12 +45,15 @@ export const addCrop = mutation({
   },
 });
 
+
 export const updateQuantity = mutation({
   args: {
     cropId: v.id("crops"),
     amount: v.number(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
     const crop = await ctx.db.get(args.cropId);
     if (!crop) throw new Error("Crop not found");
 
@@ -73,9 +76,12 @@ export const updateQuantity = mutation({
   },
 });
 
+
 export const deleteCrop = mutation({
   args: { cropId: v.id("crops") },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
     const alerts = await ctx.db
       .query("alerts")
       .withIndex("by_cropId", (q) => q.eq("cropId", args.cropId))
@@ -89,15 +95,19 @@ export const deleteCrop = mutation({
   },
 });
 
+
 export const markHarvested = mutation({
   args: { cropId: v.id("crops") },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
     await ctx.db.patch(args.cropId, {
       isHarvested: true,
       harvestedDate: new Date().toISOString().split("T")[0],
     });
   },
 });
+
 
 export const getMyInventory = query({
   args: { search: v.optional(v.string()) },
@@ -132,6 +142,7 @@ export const getMyInventory = query({
   },
 });
 
+
 export const createAlert = mutation({
   args : {
     cropId : v.optional(v.id("crops")),
@@ -159,12 +170,17 @@ export const createAlert = mutation({
     return newAlertId;
   }
 });
+
+
 export const deleteAlert = mutation({
   args: {alertId : v.id("alerts"),},
   handler: async(ctx,args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
     await ctx.db.delete(args.alertId);
   },
 });
+
 
 export const getMyalerts = query({
   args : {},

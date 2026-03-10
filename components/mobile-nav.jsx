@@ -27,7 +27,7 @@ export const MobileNav = () => {
 
   if (user.role === "farmer") {
     navItems.push(
-      { href: "/my-crops", label: "Inventory", icon: Package },
+      { href: "/inventory", label: "Inventory", icon: Package },
       { href: "/sell", label: "Sell", icon: PlusCircle },
       { href: "/doctor", label: "Doctor", icon: Leaf },
       { href: "/dashboard", label: "Dash", icon: LayoutDashboard }

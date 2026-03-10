@@ -17,7 +17,7 @@ export const Sidebar = () => {
     if(user?.role==="farmer"){
         navItems.push(
             {href:"/dashboard",label:"Dashboard",icon:LayoutDashboard},
-            {href:"/my-crops",label:"Inventory",icon:Package},
+            {href:"/inventory",label:"Inventory",icon:Package},
             {href:"/sell",label:"Sell Product",icon:PlusCircle},
             {href:"/doctor",label:"AI Plant Doctor",icon:Leaf},
         )

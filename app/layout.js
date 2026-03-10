@@ -16,7 +16,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-50 text-slate-900`}>
+      {/* ADDED SPACE BEFORE bg-[#150522] */}
+      <body className={`${inter.className} bg-[#110d14] text-slate-900 `}>
         <ClerkProvider>
           <ConvexClientProvider>
             
@@ -24,12 +25,12 @@ export default function RootLayout({ children }) {
               {/* 1. Desktop Sidebar (Fixed Left) */}
               <Sidebar />
 
-              {/* 2. Main Content (Pushed Right on Desktop) */}
-              <main className="flex-1 md:ml-72 p-4 md:p-8 max-w-6xl mx-auto w-full mb-20 md:mb-0">
+              {/* 2. Main Content */}
+              <main className="flex-1 md:ml-72 md:max-w-7xl mx-auto w-full mb-20 md:mb-0 ">
                 {children}
               </main>
 
-              {/* 3. Mobile Bottom Bar (Fixed Bottom) */}
+              {/* 3. Mobile Bottom Bar */}
               <MobileNav />
             </div>
 
