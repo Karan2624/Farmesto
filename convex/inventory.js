@@ -177,6 +177,9 @@ export const deleteAlert = mutation({
   handler: async(ctx,args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthenticated");
+    const existingAlert = await ctx.db.get(args.alertId);
+    if(!existingAlert) return;
+    
     await ctx.db.delete(args.alertId);
   },
 });
