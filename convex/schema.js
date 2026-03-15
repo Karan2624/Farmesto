@@ -49,4 +49,16 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_cropId", ["cropId"]), 
+
+    disease_outbreak: defineTable({
+      reporterId : v.string(),
+      severity : v.string(),
+      isActive : v.boolean(),
+      latitude : v.string(),
+      longitude : v.string(),
+      detectedAt : v.string(),
+  })
+  .index("by_active_status",["isActive"]),
+  
 });
+
