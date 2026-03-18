@@ -1,9 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 // import { Header } from "@/components/header"; // DELETE THIS
-import { Sidebar } from "@/components/sidebar"; // IMPORT THIS
-import { MobileNav } from "@/components/mobile-nav"; // IMPORT THIS
-import { ConvexClientProvider } from "@/components/convex-client-provider";
+import { Sidebar } from "../components/sidebar"; 
+import { MobileNav } from "../components/mobile-nav"; 
+import { ConvexClientProvider } from "../components/convex-client-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"] });

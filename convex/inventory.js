@@ -19,10 +19,12 @@ export const addCrop = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthenticated");
 
+    const cleanId = identity.subject;
+
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", cleanId)
       )
       .unique();
 
@@ -115,10 +117,13 @@ export const getMyInventory = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return [];
 
+
+    const cleanId = identity.subject;
+
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", cleanId)
       )
       .unique();
 
@@ -155,8 +160,12 @@ export const createAlert = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if(!identity) throw new Error("Unauthenticated");
 
-    const user = await ctx.db.query("users").withIndex("by_token",(q) => q.eq("tokenIdentifier",identity.tokenIdentifier)).unique();
+    // THE FIX: Use identity.subject
+    const cleanId = identity.subject;
+
+    const user = await ctx.db.query("users").withIndex("by_token",(q) => q.eq("tokenIdentifier", cleanId)).unique();
     if(!user) throw new Error("User not found");
+    
     const newAlertId = await ctx.db.insert("alerts",{
       userId : user._id,
       cropId : args.cropId,
@@ -165,7 +174,6 @@ export const createAlert = mutation({
       note : args.note,
       isCompleted : false,
       cropName : args.cropName,
-
     });
     return newAlertId;
   }
@@ -190,16 +198,15 @@ export const getMyalerts = query({
   handler : async(ctx,args) => {
     const identity = await ctx.auth.getUserIdentity();
     if(!identity) throw new Error("Unauthenticated");
-    const user = await ctx.db.query("users").withIndex("by_token",(q) => q.eq("tokenIdentifier",identity.tokenIdentifier)).unique();
+    
+    // THE FIX: Use identity.subject
+    const cleanId = identity.subject;
+
+    const user = await ctx.db.query("users").withIndex("by_token",(q) => q.eq("tokenIdentifier", cleanId)).unique();
     if(!user) return [];
 
     const alerts = await ctx.db.query("alerts").withIndex("by_userId",(q) => q.eq("userId",user._id)).collect();
 
     return alerts.sort((a,b) => new Date(a.date).getTime()-new Date(b.date).getTime());
-
   },
 });
-
-
-
-

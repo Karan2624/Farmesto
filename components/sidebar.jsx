@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "@/convex/_generated/api";
+import { api } from "../convex/_generated/api";
 import { SignIn, SignInButton } from "@clerk/clerk-react";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useQuery } from "convex/react";

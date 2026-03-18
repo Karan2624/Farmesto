@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { api } from "@/convex/_generated/api";
+import { api } from "../convex/_generated/api";
 import { useConvexAuth, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -45,7 +44,7 @@ export default function Home() {
         Welcome Back, {user?.name || "User"}!
       </h1>
       <div className="flex justify-center mt-4">
-         <Button variant="destructive">Subscribe</Button>
+        
       </div>
     </div>
   );

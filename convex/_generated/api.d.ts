@@ -8,7 +8,10 @@
  * @module
  */
 
+import type * as cleanup from "../cleanup.js";
+import type * as cron from "../cron.js";
 import type * as inventory from "../inventory.js";
+import type * as outbreak from "../outbreak.js";
 import type * as users from "../users.js";
 
 import type {
@@ -18,7 +21,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  cleanup: typeof cleanup;
+  cron: typeof cron;
   inventory: typeof inventory;
+  outbreak: typeof outbreak;
   users: typeof users;
 }>;
 

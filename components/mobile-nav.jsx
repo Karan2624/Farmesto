@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { api } from "../convex/_generated/api";
 import { Home, LayoutDashboard, Leaf, Package, PlusCircle, Store, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

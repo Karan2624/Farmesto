@@ -16,6 +16,7 @@ export default defineSchema({
   })
     .index("by_token", ["tokenIdentifier"])
     .index("by_email", ["email"]) 
+    .index("by_role",["role"])
     .searchIndex("search_name", { searchField: "name" }), 
 
 
@@ -51,11 +52,12 @@ export default defineSchema({
     .index("by_cropId", ["cropId"]), 
 
     disease_outbreak: defineTable({
-      reporterId : v.string(),
+      reporterId : v.id("users"),
+      diseaseName : v.string(),
       severity : v.string(),
       isActive : v.boolean(),
-      latitude : v.string(),
-      longitude : v.string(),
+      latitude : v.number(),
+      longitude : v.number(),
       detectedAt : v.string(),
   })
   .index("by_active_status",["isActive"]),

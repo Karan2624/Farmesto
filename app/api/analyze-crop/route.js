@@ -1,18 +1,15 @@
-import { inngest } from "@/inngest/client";
-import { getAuth } from "@clerk/nextjs/server";
-
-import { data } from "autoprefixer";
-import { errorToJSON } from "next/dist/server/render";
+import { inngest } from "../../../inngest/client";// Change to "../../../inngest/client" if it errors!
+import { auth } from "@clerk/nextjs/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(req) {
     try{
-        const {userId} = getAuth(req)
+        const { userId } = await auth();
         if(!userId) return NextResponse.json({error:"Unauthenticated"},{status:401});
+        
         const formData = await req.formData();
         const imageFile = formData.get("image");
         const lat = formData.get("lat");
@@ -25,7 +22,11 @@ export async function POST(req) {
         const arrayBuffer = await imageFile.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         const mimeType = imageFile.type;
-        const model = genAI.getGenerativeModel({model : "gemini-3.0-flash"});
+        
+       const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash"
+        });
+
 
         const prompt = `Analyze this crop leaf image. Identify the disease if present. 
     Respond STRICTLY with valid JSON in this exact format, nothing else:
@@ -49,12 +50,14 @@ export async function POST(req) {
     const result = await model.generateContent([prompt,...imageParts]);
     const responseText = result.response.text();
     let diagnosis;
+    
     try{
         const cleanJSONString = responseText.replace(/```json/g,'').replace(/```/g,'').trim();
         diagnosis = JSON.parse(cleanJSONString);
     } catch(err){
-        console.log("Faled to parse gemini output",responseText);
-        return NextResponse.json({error:"AI returned invalid format. Please try again."},{Status : 500});
+        console.log("Failed to parse gemini output",responseText);
+        // FIX: Lowercase 'status'
+        return NextResponse.json({error:"AI returned invalid format. Please try again."},{status : 500});
     }
 
     if(diagnosis.isContagious && diagnosis.severity === "High" && lat && lng){
@@ -62,6 +65,7 @@ export async function POST(req) {
             name : "farmesto/outbreak.detected",
             data: {
                 reporterClerkId : userId,
+                diseaseName: diagnosis.disease, // FIX: Added this so the email knows what disease it is!
                 prevention: diagnosis.prevention,
                 severity : diagnosis.severity,
                 symptoms : diagnosis.symptoms,
